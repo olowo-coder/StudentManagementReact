@@ -2,15 +2,16 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import Header from './Header';
 import CreateUsingAsync from './CreateUsingAsync';
+import StudentRow from './StudentRow';
 
 function StudentAsync() {
     const[students, setStudents] = useState([])
     const [showAddStudent, setShowAddStudent] = useState(false)
 
-    useEffect( () =>{
+    useEffect( () => {
         const getStudents = async () =>{
           const studentsFromServer = await fetchStudents()
-          setStudents(studentsFromServer )
+          setStudents(studentsFromServer)
         }
         getStudents()
       }, [])
@@ -20,6 +21,28 @@ function StudentAsync() {
         const res = await fetch("http://localhost:9090/students/api");
         const data = await res.json();
         return data;
+      }
+
+
+    const addStudentToDb = async (student) => {
+        const res = await fetch("http://localhost:9090/students/api/add", 
+        {method: 'POST',
+        headers:{'Content-type' : 'application/json'},
+        body: JSON.stringify(student)
+        })
+
+        const data = await res.text()
+        console.log(data)
+        const updateFromServer = await fetchStudents()
+        setStudents(updateFromServer)
+    } 
+
+
+    const deleteStudent = async (studentId) => {
+        const res = await fetch(`http://localhost:9090/students/api/delete/${studentId}`, {method: 'DELETE'})
+        const data = await res.text()
+        console.log(data)
+        setStudents(students.filter(student=> student.studentId !== studentId));
       }
 
     return (
@@ -67,7 +90,7 @@ function StudentAsync() {
           </div>
           
         </div>
-        {showAddStudent && <CreateUsingAsync/>}
+        {showAddStudent && <CreateUsingAsync addingStudent={addStudentToDb}/>}
         <table className="table table-striped table-bordered">
           <thead className="table-dark">
             <tr>
@@ -79,28 +102,10 @@ function StudentAsync() {
           </thead>
 
           <tbody>
-              {students.map(student => 
-            <tr key={student.studentId}>
-              <td>{student.firstName}</td>
-              <td>{student.lastName}</td>
-              <td>{student.email}</td>
-              <td>
-                <a
-                  href="#"
-                  className="btn btn-primary mr-2"
-                >
-                  Update
-                </a>
-
-                <a
-                  href="#"
-                  className="btn btn-danger"
-                >
-                  Delete
-                </a>
-              </td>
-            </tr>
-                )}
+              <StudentRow
+              studentsAll={students}
+              onDelete={deleteStudent}
+              />
           </tbody>
         </table>
         </div>

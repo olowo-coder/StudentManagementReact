@@ -1,43 +1,15 @@
 import React from 'react'
 import { useState } from 'react';
 
-function CreateUsingAsync() {
-    const[students, setStudents] = useState([])
-
+function CreateUsingAsync({ addingStudent }) {
+   
     const [firstName, setFirstName] = useState ('')
     const [lastName, setLastName] = useState ('')
     const [email, setEmail] = useState ('')
 
-    // const handleClick = (e) =>{
-    //     e.preventDefault()
-    //     if(!firstName){
-    //         alert('Please fill the first Name')
-    //         return
-    //     }
-
-    //     if(!lastName){
-    //         alert('Please fill the Last Name')
-    //         return
-    //     }
-
-    //     if(!email){
-    //         alert('Please fill the Email')
-    //         return
-    //     }
-
-    //     const student = {firstName, lastName, email}
-    //     console.log(student)
-    //     fetch("http://localhost:9090/students/api/add", {
-    //         method: "POST",
-    //         headers: {"Content-Type":"application/json"},
-    //         body: JSON.stringify(student)
-    //     }).then(res=>res.text()).then(result => {
-    //         console.log(result)
-    //     })
-    // }
 
      //Add Student
-    const addStudent = async (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
         if(!firstName){
             alert('Please fill the first Name')
@@ -54,17 +26,8 @@ function CreateUsingAsync() {
             return
         }
 
-        const student = {firstName, lastName, email}
-
-        const res = await fetch("http://localhost:9090/students/api/add", 
-        {method: 'POST',
-        headers:{'Content-type' : 'application/json'},
-        body: JSON.stringify(student)
-        })
-
-        const data = await res.text()
-        console.log(data)
-        setStudents([...students, data])
+        addingStudent({firstName, lastName, email})
+        
         setFirstName('')
         setLastName('')
         setEmail('')
@@ -79,7 +42,7 @@ function CreateUsingAsync() {
         <div className="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
           <h1 className="text-center"> Create New Student </h1>
           <div className="card-body">
-            <form action="" method="POST">
+            <form onSubmit={onSubmit}>
               <div className="form-group">
                 <label> Student First Name </label>
                 <input
@@ -120,7 +83,7 @@ function CreateUsingAsync() {
               </div>
 
               <div className="box-footer">
-                <button type="submit" className="btn btn-primary" onClick={addStudent}>
+                <button type="submit" className="btn btn-primary">
                   Submit
                 </button>
               </div>
