@@ -79,14 +79,14 @@ function StudentComponentUsingFunction() {
               <td>{student.email}</td>
               <td>
                 <a
-                  href="#"
+                  href="/"
                   className="btn btn-primary mr-2"
                 >
                   Update
                 </a>
 
                 <a
-                  href="#"
+                  href="/"
                   className="btn btn-danger"
                 >
                   Delete
